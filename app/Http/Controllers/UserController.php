@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
@@ -33,14 +34,13 @@ class UserController extends Controller
     public function update(User $user, Request $request)
     {
         $data = $request->validate([
+            'token' => 'required',
             'name' => 'string|max:255',
             'password' => 'confirmed|min:8',
         ]);
 
         $user->fill($data);
-        $user->save([
-            'password' => bcrypt($request->password),
-        ]);
+        $user->update(['password'=> Hash::make($request->password)]);
     }
 
     /**
