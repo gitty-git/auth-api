@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Auth\Middleware\EnsureEmailIsVerified;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,5 +21,12 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user', 'UserController@index');
-    Route::put('/user/{user}', 'UserController@update');
+    Route::patch('/user/{user}', 'UserController@update');
+    Route::patch('/destroy/user/{user}', 'UserController@destroy');
+    Route::patch('/update/password/{user}', 'UpdatePasswordController@update');
 });
+
+//Route::middleware('auth:sanctum')->middleware('verified')->group(function () {
+//    Route::get('/user', 'UserController@index');
+//    Route::put('/user/{user}', 'UserController@update');
+//});

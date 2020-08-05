@@ -8,49 +8,30 @@ use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @param Request $request
-     * @return \Illuminate\Http\Response
-     */
     public function index(Request $request)
     {
         return $request->user();
     }
 
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param User $user
-     * @param \Illuminate\Http\Request $request
-     * @return void
-     */
     public function update(User $user, Request $request)
     {
-        $data = $request->validate([
-            'token' => 'required',
+        $user->fill($request->validate([
             'name' => 'string|max:255',
-            'password' => 'confirmed|min:8',
-        ]);
+            'email' => 'string|email|max:255|unique:users',
+        ]))->update();
 
-        $user->fill($data);
-        $user->update(['password'=> Hash::make($request->password)]);
+        return response()->json([
+            'message' => 'User updated!'
+        ]);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function destroy($id)
     {
-        //
+        $users = User::findOrFail($id);
+        $users->delete();
+
+        return response()->json([
+            'message' => 'User deleted!'
+        ]);
     }
 }
